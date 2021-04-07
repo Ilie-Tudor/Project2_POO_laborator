@@ -380,7 +380,6 @@ public:
         }
         return true;
     }
-
 };
 class Stack_List:public Stack, private List{
 public:
@@ -441,12 +440,29 @@ public:
         return false;
     }
     bool Ins_next(int x){
-        (*this)[0]=3;
-        (*this).afis();
+        for(int i = this->length()-1; i>=k; i--){
+            int u=(*this)[i];
+            (*this)[i+1]=(*this)[i];
+        }
+        (*this)[k]=x;
+        return true;
     }
-    bool Del_next(){}
-    bool Get_next(int &x){}
+    bool Del_next(){
+        for(int i=k+1;i<this->length();i++){
+            int u=(*this)[i];
+            (*this)[i-1]=u;
+        }
+        if(k<this->length())    {(*this).truncate(this->length()-1); return true;}
+        return false;
+    }
+    bool Get_next(int &x){
+
+        if(k<this->length())    {x=(*this)[k]; return true;}
+        return false;
+    }
+    void afisare(){this->afis();}
 };
+
 class T{
 public:
     int x,y;
@@ -503,7 +519,19 @@ int main(){
 
 Stack_List_Vector v;
 v.Ins_next(13);
-
+v.Next();
+v.Ins_next(43);
+v.Next();
+v.Ins_next(53);
+v.Next();
+v.Ins_next(163);
+v.Next();
+v.Ins_next(23);
+v.Del_next();
+int x;
+v.Get_next(x);
+cout<<x<<endl;
+v.afisare();
 
 }
 
