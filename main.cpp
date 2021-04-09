@@ -5,28 +5,6 @@ using namespace std;
 
 
 class Stack{
-//- clasa abstracta 'stack', care descrie conceptul de stiva de intregi, avand:
-//  metode pure publice:
-//    operatorii '<<' (push), '>>' (pop), '!' (test stiva vida);
-//    detalii: '<<', resp. '>>',  au intregul inserat, resp. extras, ca
-//     parametru prin valoare, resp. referinta; '<<' si '>>' returneaza stiva
-//     curenta prin referinta (pentru a permite push/pop miltiple); '!'
-//     returneaza true/false;
-//  metode virtuale publice:
-//    destructor;
-//  metode publice:
-//    operatorii '-' (unar, videaza stiva curenta), '==' (testeaza egal) '!='
-//    (testeaza diferit), '=' (atribuire);
-//    detalii: '==', '!=', '=' au ca parametru prin referinta o stiva; '-' nu
-//      returneaza nimic, '==' si '!=' returneaza 'true'/'false', '='
-//      returneaza referinta la stiva curenta; '-', '==', '!=', '=' se vor
-//      implementa deasupra primitivelor '<<', '>>', '!';
-//- functiile independente (ne-prieten pentru 'stack'):
-//    operatorii '>>' (citire 'stack' dintr-un 'istream'), '<<' (scriere
-//      'stack'intr-un 'ostream');
-//    detalii: '>>' si '<<' au ca parametri prin referinta streamul si stiva si
-//     returneaza prin referinta streamul; ei se vor implementa deasupra
-//     metodelor publice ale clasei 'stack';
 public:
     virtual Stack& operator<<(int x) = 0;
     virtual Stack& operator>>(int &x) = 0;
@@ -87,54 +65,37 @@ public:
         return (*this);
     }
 
-}; // todo ... functiile independente pentru stack de citire si afisare din stream
-//class stivaV : public Stack{
-//    int n=0;
-//    int v[100];
-//public:
-//    Stack& operator<<(int x){
-//        v[n++]=x;
-//        return (*this);
-//    }
-//    Stack& operator>>(int &x){
-//        v[n-1]=0;
-//        n--;
-//        return (*this);
-//    }
-//    bool operator!(){}
-//    void afis(){
-//        for(int i=0;i<n;i++){
-//            cout<<v[i]<<" ";
-//        }
-//        cout<<endl;
-//    }
-//};
+};
+istream& operator>>(istream& in, Stack& s){
+    -s;
+    int n;
+    cout<<"Numarul de elemente citite: ";
+    in>>n;
+    cout<<"Scrieti elementele: ";
+    while(n--){
+        int elem;
+        in>>elem;
+        s<<elem;
+    }
+    return in;
+}
+ostream& operator<<(ostream& out, Stack& s){
+    int v[1000], n=0;
+    while(!s){
+        int x;
+        s>>x;
+        v[n++]=x;
+    }
+    for(int i=n-1;i>=0;i--){
+        s<<v[i];
+    }
+    for(int i=n-1;i>=0;i--){
+        out<<v[i]<<" ";
+    }
+    out<<'\n';
+    return out;
+}
 class List{
-//    - clasa abstracta 'list', care descrie conceptul de lista de intregi simplu
-//    inlantuita, avand o pozitie curenta si permitand inserarea/eliminarea/
-//    consultarea unui element dupa pozitia curenta; clasa contine:
-//  metode publice pure:
-//    'reset' (pozitia curenta se plaseaza inaintea primului element);
-//    'next' (pozitia curenta avanseaza un element, daca se poate);
-//    'end' (test daca dupa pozitia curenta nu mai sunt elemente);
-//    'ins_next' (insereaza un intreg dupa pozitia curenta, daca se poate);
-//    'del_next' (elimina elementul de dupa pozitia curenta, daca exista):
-//    'get_next' (furnizeaza elementul de dupa pozitia curenta, daca exista);
-//    detalii: 'ins_next' / 'get_next' au intregul inserat, resp. furnizat, ca
-//     parametru prin valoare, resp. referinta; celelalte metode nu au
-//     parametri; 'reset' nu returneaza nimic, celelalte metode returneaza
-//     'true'/'false';
-//  metode virtuale publice:
-//    destructor;
-//  metode publice:
-//    operatorii '-' (unar, videaza lista curenta), '==' (testeaza egal) '!='
-//    (testeaza diferit), '=' (atribuire);
-//    detalii: '==', '!=', '=' au ca parametru prin referinta o lista; '-' nu
-//      returneaza nimic, '==' si '!=' returneaza 'true'/'false', '='
-//      returneaza referinta la lista curenta; '-', '==', '!=', '=' se vor
-//      implementa deasupra primitivelor 'reset', 'next', 'end', 'ins_next',
-//      'del_next', 'get_next'; '==' si '!=' vor lasa la sfarsit lista curenta
-//      nemodificata, inclusiv in privinta pozitiei curente;
 public:
     virtual void Reset() = 0;
     virtual bool Next() = 0;
@@ -174,8 +135,6 @@ public:
         }
         (*this).Reset();
 
-
-
         int PozRelativaLaFinalL=0;
         int nL=0;
         while(!l.End()){
@@ -188,7 +147,6 @@ public:
             l.Next();
         }
         l.Reset();
-
         bool rez=true;
         while(!l.End() && !(*this).End()){
                 int x;
@@ -235,73 +193,7 @@ public:
     }
 
 };
-//class ListaTest:public List{
-//private:
-//    int n;
-//    int v[100];
-//    int pozCurent;
-//public:
-//    ListaTest(){
-//        n=0;
-//        pozCurent=0;
-//    }
-//    void Reset(){
-//        pozCurent=0;
-//    }
-//    bool Next(){
-//        if(pozCurent<n) pozCurent++;
-//        else    return false;
-//        return true;
-//    }
-//    bool End(){
-//        if(pozCurent==n){
-//            return true;
-//        }
-//        return false;
-//    }
-//    bool Ins_next(int x){
-//        for(int i=n-1;i>=pozCurent; i--){
-//            v[i+1]=v[i];
-//        }
-//        v[pozCurent] = x;
-//        n++;
-//    }
-//    bool Del_next(){
-//        for(int i=pozCurent;i<n-1;i++){
-//            v[i]=v[i+1];
-//        }
-//        n--;
-//    }
-//    bool Get_next(int &x){
-//        x = v[pozCurent];
-//        return true;
-//    }
-//    void afisare(){
-//        cout<<"l: ";
-//        for(int i=0;i<n;i++){
-//           cout<<v[i]<<" ";
-//        }
-//        cout<<endl;
-//    }
-//};
 class Vector{
-//    clasa 'vector', care descrie conceptul de vector de intregi, avand:
-//  membri data privati:
-//    'buf' (pointer la 'int', retine adresa zonei cu elementele, care este
-//     alocata dinamic), 'n' ('int', numarul de elemente);
-//  metode publice:
-//    constructor implicit (initializeaza 'buf' si 'n' pentru vectorul vid);
-//    constructor de conversie dinspre 'int' (creaza un vector cu un intreg);
-//    constructor de copiere;
-//    destructor (elibereaza resursele vectorului);
-//    operatorul '[]' (indezare, returneaza referinta la intregul corespunzator
-//      indicelui dat ca parametru, iar daca indicele este >= 'n', realoca zona
-//      cu elementele);
-//    operatorul '=' (atribuire, sursa este primita ca parametru prin referinta
-//      la zona constanta, returneaza prin referinta vectorul curent);
-//    'truncate" (realoca/truncheaza vectorul la dimensiunea data ca parametru
-//      si returneaza 'true'/'false', insemnand succes/esec);
-//    'length' (fara parametri, returneaza 'n');
     int *buf;
     int n;
 public:
@@ -352,12 +244,6 @@ public:
     int length(){
         return n;
     }
-    void afis(){
-        for(int i=0;i<n;i++){
-            cout<<buf[i]<<" ";
-        }
-        cout<<endl;
-    }
     Vector& operator=(Vector &copiat){
         delete[] buf;
         n = copiat.length();
@@ -368,7 +254,7 @@ public:
         return *this;
     }
     bool truncate(int dim){
-        if(dim>=n || dim<=0) return false;
+        if(dim>=n || dim<0) return false;
         else{
             int *temp = new int[dim];
             for(int i=0;i<dim;i++){
@@ -390,6 +276,7 @@ public:
             this->Next();
         }
         this->Ins_next(x);
+        this->Reset();
         return (*this);
     }
     Stack& operator>>(int &x){
@@ -399,14 +286,14 @@ public:
             nrElem++;
             (*this).Next();
         }
-        while(nrElem>=1){
-            (*this).Reset();
-            for(int i=0;i<nrElem-1;i++){
-                (*this).Next();
-            }
-            (*this).Del_next();
-            nrElem--;
+        this->Reset();
+        for(int i=0;i<nrElem-1;i++){
+            this->Next();
         }
+        int g;
+        this->Get_next(g);
+        x=g;
+        this->Del_next();
         (*this).Reset();
         return (*this);
     }
@@ -418,8 +305,16 @@ public:
 
 };
 class Stack_List_Vector:public Stack_List, private Vector{
+
+static int nrAparitii;
 int k=0;
 public:
+    static int GetNrAparitii(){
+        return nrAparitii;
+    }
+    Stack_List_Vector(){
+        nrAparitii++;
+    }
     void Reset(){
         k=0;
     }
@@ -442,7 +337,7 @@ public:
     bool Ins_next(int x){
         for(int i = this->length()-1; i>=k; i--){
             int u=(*this)[i];
-            (*this)[i+1]=(*this)[i];
+            (*this)[i+1]=u;
         }
         (*this)[k]=x;
         return true;
@@ -456,82 +351,108 @@ public:
         return false;
     }
     bool Get_next(int &x){
-
         if(k<this->length())    {x=(*this)[k]; return true;}
+        else x=(*this)[k-1];
         return false;
     }
-    void afisare(){this->afis();}
-};
+    bool operator == (Stack_List_Vector& l){
+        int PozRelativaLaFinalThis=0;
+        int nThis=0;
+        while(!(*this).End()){
+            PozRelativaLaFinalThis++;
+            (*this).Next();
+        }
+        (*this).Reset();
+        while(!(*this).End()){
+            nThis++;
+            (*this).Next();
+        }
+        (*this).Reset();
 
-class T{
-public:
-    int x,y;
-    T(int i, int j){
-        x=i;y=j;
+        int PozRelativaLaFinalL=0;
+        int nL=0;
+        while(!l.End()){
+            PozRelativaLaFinalL++;
+            l.Next();
+        }
+        l.Reset();
+        while(!l.End()){
+            nL++;
+            l.Next();
+        }
+        l.Reset();
+
+        bool rez=true;
+        while(!l.End() && !(*this).End()){
+                int x;
+                int y;
+                (*this).Get_next(x);
+                (*this).Next();
+                l.Get_next(y);
+                l.Next();
+                if(x!=y)
+                {
+
+                    rez=false;
+                }
+        }
+        if(!l.End()) rez=false;
+        if(!(*this).End()) rez=false;
+
+        l.Reset();
+        (*this).Reset();
+        for(int i=0;i<nL-PozRelativaLaFinalL;i++){
+            l.Next();
+        }
+        for(int i=0;i<nThis-PozRelativaLaFinalThis;i++){
+            (*this).Next();
+        }
+        return rez;
+
     }
-    bool operator=(T& copie){
-        (*this).x=3;y=3;
-        copie.x=88;
+    bool operator != (Stack_List_Vector& l){
+        if((*this)==l) return false;
+        return true;
     }
+    Stack_List_Vector& operator =(Stack_List_Vector& copie){
+        (*this).Reset();
+        int nrElem = 0;
+        while(!(*this).End()){
+            nrElem++;
+            (*this).Next();
+        }
+        copie.Reset();
+        while(!copie.End()){
+            int x;
+            copie.Get_next(x);
+            (*this).Ins_next(x);
+            (*this).Next();
+            copie.Next();
+        }
+        (*this).Reset();
+        return (*this);
+    }
+
 };
-class Tderiv:public T{
-public:
-    Tderiv(int i=0, int j=0):T(i,j){};
-    int z=7;
-};
+int Stack_List_Vector::nrAparitii=0;
+
 int main(){
-//    int t[] = {1,2,3,4,5};
-//    int tL = 5;
-//    Vector v(tL, t),f,a;
-//    v.afis();
-//    a=f=v;
-//    f.afis();
-//    a.afis();
-//    a.truncate(1);
-//    a.afis();
 
-//    Stack *stv,*stvC;
-//    stv = new stivaV;
-//    stvC = new stivaV;
-//    (*stv)<<3<<4<<5<<6;
-//    stv -> afis();
-//    (*stvC)=(*stv);
-//    int x;
-//    (*stvC).afis();
-//    while(!(*stv)){
-//        (*stv)>>x;
-//        cout<<x<<" ";
-//    }
-//    cout<<endl;
-//    while(!(*stvC)){
-//        (*stvC)>>x;
-//        cout<<x<<" ";
-//    }
-//List *l1=new ListaTest,*l2=new ListaTest;
-//(*l1).Ins_next(5);
-//(*l1).Ins_next(6);
-//(*l1).Ins_next(7);
-//(*l2).Ins_next(4);
-//
-//(*l2)=(*l1);
-//(*l1).afisare();
-//(*l2).afisare();
-
-Stack_List_Vector v;
-v.Ins_next(13);
-v.Next();
-v.Ins_next(43);
-v.Next();
-v.Ins_next(53);
-v.Next();
-v.Ins_next(163);
-v.Next();
-v.Ins_next(23);
-v.Del_next();
-int x;
-v.Get_next(x);
-cout<<x<<endl;
-v.afisare();
+Stack_List_Vector s,t,r;
+cin>>s;
+t=s;
+cout<<"Prima afisare a lui t: "<<t;
+cout<<"A doua afisare a lui t: "<<t;
+while(!t){
+    int x;
+    t>>x;
+    r<<x;
+}
+cout<<"Afisarea lui r: "<<r;
+if(r==s){
+    cout<<"r si s sunt egale";
+}
+else cout<<"r si s nu sunt egale ";
 
 }
 
